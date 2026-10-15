@@ -25,7 +25,7 @@ export default memo(function Section({ section, t, lang, onOpen, isFirst }) {
             video={video}
             lang={lang}
             onOpen={onOpen}
-            eager={isFirst && i < ABOVE_THE_FOLD}
+            priority={isFirst && i < ABOVE_THE_FOLD}
           />
         ))}
       </div>

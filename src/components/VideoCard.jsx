@@ -6,7 +6,7 @@ export default memo(function VideoCard({
   video,
   lang,
   onOpen,
-  eager,
+  priority,
   subtitle,
 }) {
   return (
@@ -17,9 +17,10 @@ export default memo(function VideoCard({
           alt=""
           width="480"
           height="360"
-          loading={eager ? "eager" : "lazy"}
-          // Lowercase on purpose: React 18 drops the camelCase fetchPriority prop.
-          fetchpriority={eager ? "high" : "auto"}
+          // Every thumbnail loads up front (about 1 MB in all) so fast scrolling never shows
+          // empty boxes; the first row goes first. Lowercase fetchpriority: React 18 drops camelCase.
+          loading="eager"
+          fetchpriority={priority ? "high" : "low"}
           decoding="async"
         />
         <span className="play" aria-hidden="true">

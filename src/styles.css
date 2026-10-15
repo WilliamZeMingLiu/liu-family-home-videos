@@ -57,8 +57,8 @@ button {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  /* Solid, not blurred: a blur behind a sticky bar makes scrolling stutter in Safari. */
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
   /* Title and language toggle on top; section tabs and search below. */
   display: grid;

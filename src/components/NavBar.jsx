@@ -37,9 +37,18 @@ export default function NavBar({
       if (atBottom) current = visibleSlugs[visibleSlugs.length - 1];
       setActiveSlug(current);
     };
+    // At most one check per frame, however many scroll events fire.
+    let frame = 0;
     const onScroll = () => {
-      if (!jumpingRef.current) updateActive();
-      else settleAfter(150); // still scrolling; wait for it to stop
+      if (jumpingRef.current) {
+        settleAfter(150); // still scrolling; wait for it to stop
+        return;
+      }
+      if (!frame)
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          updateActive();
+        });
     };
     const settleAfter = (ms) => {
       clearTimeout(settleTimerRef.current);
@@ -52,6 +61,7 @@ export default function NavBar({
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
       clearTimeout(settleTimerRef.current);
     };
   }, [visibleSlugs]);
