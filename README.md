@@ -76,7 +76,7 @@ The workflow uses only GitHub's official actions, pinned to exact commits. It st
 
 - **Minified and tree-shaken:** `npm run build` does both, removing unused code. The JavaScript is about 55 KB gzipped, mostly React, and the CSS is about 2 KB.
 - **No web fonts, no images to host:** the site uses system fonts, and thumbnails come straight from YouTube's image servers.
-- **Lazy thumbnails:** only the first row loads up front; the rest load as you scroll.
+- **Thumbnails load up front:** all of them (about 1 MB) download when the page opens, first row first, so fast scrolling never shows empty boxes.
 - **Fewer re-renders:** opening or switching videos doesn't re-render the grid.
 - **Measured** on a simulated phone (4x slower CPU, 4G): content appears in about 0.6 s with no layout shift. Lighthouse scores 100 for Accessibility and Best Practices.
 

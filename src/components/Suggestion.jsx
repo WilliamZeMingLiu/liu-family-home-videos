@@ -52,7 +52,7 @@ export default function Suggestion({
             video={video}
             lang={lang}
             onOpen={onOpen}
-            eager
+            priority
             subtitle={sectionNameOf(video)}
           />
         ))}
