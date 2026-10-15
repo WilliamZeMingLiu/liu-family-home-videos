@@ -1,0 +1,650 @@
+:root {
+  --bg: #ffffff;
+  --surface: #f2f2f2;
+  --surface-hover: #e5e5e5;
+  --border: #e5e5e5;
+  --text: #0f0f0f;
+  --muted: #606060;
+  --focus: #444444;
+  --radius: 12px;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* No browser blue anywhere: keyboard focus rings, text selection and phone tap flashes are gray. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #d6d6d6;
+  color: var(--text);
+}
+
+html {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  /* Fixed line height so Chinese fonts (taller default metrics) don't shift the layout. */
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ── Navbar ─────────────────────────────────────────── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  /* Title and language toggle on top; section tabs and search below. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "brand lang"
+    "tabs  search";
+  align-items: center;
+  gap: 10px 16px;
+  padding: 12px 24px 12px;
+}
+
+.navbar-top {
+  display: contents;
+}
+
+.brand {
+  grid-area: brand;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.search {
+  grid-area: search;
+  width: min(360px, 40vw);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #d3d3d3;
+  background: #fff;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--focus);
+}
+
+/* Browser's built-in clear (✕) button: soft gray instead of the default blue, with a pointer. */
+.search::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  cursor: pointer;
+  background-color: #8a8a8a;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='black' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='black' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+.search::-webkit-search-cancel-button:hover {
+  background-color: var(--muted);
+}
+
+.lang-toggle {
+  grid-area: lang;
+  justify-self: end;
+  display: flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.lang {
+  min-width: 36px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.lang:hover:not(.active) {
+  color: var(--text);
+}
+
+.lang.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* Holds the tab row plus the ‹ › buttons that appear when tabs are cut off. */
+.tabs-wrap {
+  grid-area: tabs;
+  position: relative;
+  min-width: 0;
+}
+
+.tabs-arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  width: 56px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+.tabs-arrow.left {
+  left: 0;
+  justify-content: flex-start;
+  background: linear-gradient(to right, #fff 55%, rgba(255, 255, 255, 0));
+}
+
+.tabs-arrow.right {
+  right: 0;
+  justify-content: flex-end;
+  background: linear-gradient(to left, #fff 55%, rgba(255, 255, 255, 0));
+}
+
+.tabs-arrow span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #d3d3d3;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1;
+  padding-bottom: 3px;
+}
+
+.tabs-arrow:hover span {
+  background: var(--surface-hover);
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  flex: none;
+  padding: 7px 16px;
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.tab:hover:not(:disabled):not(.active) {
+  background: var(--surface-hover);
+}
+
+.tab.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.tab:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── Sections & grid ───────────────────────────────── */
+.content {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 8px 24px 32px;
+}
+
+/* ── Suggested videos ─────────────────────────────── */
+.suggestion {
+  padding-top: 24px;
+}
+
+.suggestion-panel {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  height: 100%;
+  justify-content: center;
+}
+
+.suggestion-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.suggestion-hint {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid #d3d3d3;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: var(--surface-hover);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.section {
+  padding-top: 20px;
+}
+
+.section:last-child .grid {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 22px;
+  margin: 0 0 16px;
+}
+
+.section-count {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 6px;
+}
+
+.grid {
+  display: grid;
+  /* At most 4 per row; fewer when cards would get narrower than 240px. */
+  --cols: 4;
+  --col-gap: 24px;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(
+      max(240px, calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols))),
+      1fr
+    )
+  );
+  gap: 32px var(--col-gap);
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card {
+  text-align: left;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 8px;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s;
+}
+
+.play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.card:hover .thumb img,
+.card:focus-visible .thumb img {
+  transform: scale(1.04);
+}
+
+.card:hover .play,
+.card:focus-visible .play {
+  opacity: 1;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: var(--radius);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.card-meta {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 64px 0;
+}
+
+/* ── Modal ─────────────────────────────────────────── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.85);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: fade 0.15s ease-out;
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.player {
+  /* As wide as possible while the 16:9 video still fits the screen height. */
+  width: min(1100px, calc(100vw - 364px), calc((100vh - 160px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.player iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* Each side is one button: the arrow, then which video it goes to. */
+.nav-side {
+  position: relative;
+  flex: none;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.nav-side:disabled {
+  visibility: hidden;
+}
+
+.nav-side:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 6px;
+  border-radius: var(--radius);
+}
+
+.nav-arrow {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  font-size: 34px;
+  line-height: 1;
+  padding-bottom: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition:
+    background 0.15s,
+    transform 0.15s;
+}
+
+.nav-side:hover .nav-arrow {
+  background: #fff;
+  transform: scale(1.08);
+}
+
+/* Hangs below the arrow so the arrow itself stays centered on the video. */
+.nav-caption {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 100%;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.nav-direction {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-title {
+  font-size: 15px;
+  font-weight: 500;
+  /* Long titles wrap to at most three lines. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.nav-side:hover .nav-title {
+  text-decoration: underline;
+}
+
+.close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  font-size: 18px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+.close:hover {
+  background: #fff;
+}
+
+.player-wrap {
+  position: relative;
+}
+
+/* Small and out of the way: just below the video's bottom-right corner. */
+.share {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: background 0.15s;
+}
+
+.share-check {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1e8e3e;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.share:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.share:hover {
+  background: #fff;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Phone ─────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .navbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand lang"
+      "search search"
+      "tabs tabs";
+    row-gap: 8px;
+    padding: 10px 16px;
+  }
+  .brand {
+    font-size: 19px;
+  }
+  .suggestion {
+    padding-top: 16px;
+  }
+  .suggestion-title {
+    font-size: 21px;
+  }
+  .search {
+    width: 100%;
+  }
+  .content {
+    padding: 4px 16px 48px;
+  }
+  .backdrop {
+    padding: 0;
+  }
+  .stage {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px 32px;
+  }
+  .nav-side {
+    width: 140px;
+  }
+  .nav-caption {
+    position: static;
+  }
+  .player-wrap {
+    order: -1;
+    display: flex;
+    flex-direction: column;
+  }
+  .share {
+    position: static;
+    order: 1; /* after the video */
+    align-self: flex-end;
+    margin: 10px 16px 0 0;
+  }
+  .player {
+    width: 100vw;
+    border-radius: 0;
+  }
+}
